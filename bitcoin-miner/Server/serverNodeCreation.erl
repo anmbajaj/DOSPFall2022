@@ -10,15 +10,18 @@
 -author("harshini").
 
 %% API
--export([startNode/0]).
+-import(string,[concat/2]).
+-export([startNode/1]).
 
 % Start Server Node
-startNode() ->
-  net_kernel:start(['Server@127.0.0.1']),
+startNode(IPAddr) ->
+  Str1 = "Server@",
+  Str2 = concat(Str1,IPAddr),
+  net_kernel:start([list_to_atom(Str2)]),
   erlang:set_cookie('bajaj.anmol-t.matukumalli'),
   NodeGenerated = node(),
   if
-    NodeGenerated == 'Server@127.0.0.1' ->
+    NodeGenerated == 'Server@10.20.108.43' ->
       io:fwrite("Server Node Created\n");
     true ->
       io:fwrite("Server Node Creation Failed")
