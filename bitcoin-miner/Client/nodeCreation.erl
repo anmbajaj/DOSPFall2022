@@ -32,7 +32,7 @@ startNode(WIP,SIP) ->
 
   NodesGenerated = nodes(),
   if
-    NodesGenerated == ['Server@10.20.108.43'] ->
+    NodesGenerated == ['Server@10.3.1.1'] ->
       io:fwrite("Worker - Server Connected Established Successfully\n");
     true ->
       io:fwrite("Worker - Server Connection Failed")
