@@ -13,7 +13,8 @@
 -import(string,[concat/2]).
 -export([startNode/2]).
 
-% Start Client Node
+
+% Start Worker Node
 startNode(WIP,SIP) ->
   CStr1 = "Worker@",
   CStr2 = concat(CStr1,WIP),
@@ -25,9 +26,9 @@ startNode(WIP,SIP) ->
   NodeGenerated = node(),
   if
     NodeGenerated == 'Worker@10.3.4.2' ->
-      io:fwrite("Client Node Created\n");
+      io:fwrite("Worker Node Created\n");
     true ->
-      io:fwrite("Client Node Creation Failed")
+      io:fwrite("Worker Node Creation Failed")
   end,
 
   NodesGenerated = nodes(),
@@ -35,7 +36,7 @@ startNode(WIP,SIP) ->
     NodesGenerated == ['Server@10.20.108.43'] ->
       io:fwrite("Client - Server Connected Established Successfully\n");
     true ->
-      io:fwrite("Client - Server Connection Failed")
+      io:fwrite("Worker - Server Connection Failed")
   end.
 
 

@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8693ed0-85a9-4952-a678-6df262e70a9f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/util.beam" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/util.erl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/nodeCreation.beam" beforeDir="false" afterPath="$PROJECT_DIR$/Client/nodeCreation.beam" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/nodeCreation.erl" beforeDir="false" afterPath="$PROJECT_DIR$/Client/nodeCreation.erl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/serverNodeCreation.beam" beforeDir="false" afterPath="$PROJECT_DIR$/Server/serverNodeCreation.beam" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/serverNodeCreation.erl" beforeDir="false" afterPath="$PROJECT_DIR$/Server/serverNodeCreation.erl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/util.erl" beforeDir="false" afterPath="$PROJECT_DIR$/Server/util.erl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
