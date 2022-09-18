@@ -7,7 +7,7 @@
 %%% Created : 15. Sep 2022 7:30 PM
 %%%-------------------------------------------------------------------
 -module(util).
--export([calculateSHA256/1, get_random_string/2, runner/4, pattern_match_string/3, start/0]).
+-export([calculateSHA256/1, get_random_string/2, runner/5, pattern_match_string/3, start/0]).
 -import(string,[concat/2]).
 -define(GATOR_ID, "bajaj.anmol;").
 %-define(NUMBER_OF_LEADING_ZEROS, 2).
@@ -36,23 +36,22 @@ calculateSHA256(String) ->
 
 
 %runner
-runner(_, _, Workload, Workload) -> true;
-runner(Sender, TotalZeros, Count, Workload) ->
+runner(_, _, Workload, Workload, _) -> true;
+runner(Sender, TotalZeros, Count, Workload, ActorPID) ->
   String = get_random_string(?RANDOM_STRING_LENGTH, ?ALLOWED_CHARS),
   HashString = calculateSHA256(String),
   case pattern_match_string(HashString, 0, TotalZeros) of
     true ->
-      Sender ! {concat(concat(?GATOR_ID, String), concat("\t", HashString))};
-%      io:fwrite("~p~n", [HashString]);
+      ActorPID   ! {concat(concat(?GATOR_ID, String), concat("\t", HashString))};
     false ->
       ok
   end,
-  runner(Sender, TotalZeros, Count+1, Workload).
+  runner(Sender, TotalZeros, (Count+1), Workload, ActorPID).
 
 start() ->
   receive
-    {Sender, start, TotalZeros, Workload} ->
-      runner(Sender, TotalZeros, 0, Workload)
+    {Sender, start, TotalZeros, Workload, ActorPID} ->
+      runner(Sender, TotalZeros, 0, trunc(Workload), ActorPID)
   end,
   start().
 

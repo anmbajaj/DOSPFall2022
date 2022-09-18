@@ -13,6 +13,7 @@
 -import(string,[concat/2]).
 -export([startNode/2]).
 
+
 % Start Worker Node
 startNode(WIP,SIP) ->
   CStr1 = "Worker@",
@@ -32,8 +33,8 @@ startNode(WIP,SIP) ->
 
   NodesGenerated = nodes(),
   if
-    NodesGenerated == ['Server@10.3.1.1'] ->
-      io:fwrite("Worker - Server Connected Established Successfully\n");
+    NodesGenerated == ['Server@10.20.108.43'] ->
+      io:fwrite("Client - Server Connected Established Successfully\n");
     true ->
       io:fwrite("Worker - Server Connection Failed")
   end.
