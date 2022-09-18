@@ -11,7 +11,7 @@
 -define(NUMBER_OF_ACTORS_ON_SINGLE_NODE, 250).
 
 %% API
--export([startNode/1, start/1]).
+-export([startNode/1, start/1, spawn_print_actor/0]).
 
 -import(lists,[append/2]).
 -import(string,[concat/2]).
@@ -30,11 +30,10 @@ startNode(IPAddr) ->
       io:fwrite("Server Node Creation Failed")
   end.
 
-
-distribute_workload([], _, _) -> true;
-distribute_workload([PID | PIDs], K, IndividualWorkload) ->
-  PID ! {self(), start, K, IndividualWorkload},
-  distribute_workload(PIDs, K, IndividualWorkload).
+distribute_workload([], _, _, _) -> true;
+distribute_workload([PID | PIDs], K, IndividualWorkload, ActorPID) ->
+  PID ! {self(), start, K, IndividualWorkload, ActorPID},
+  distribute_workload(PIDs, K, IndividualWorkload, ActorPID).
 
 spawn_actors_on_single_node(_, ?NUMBER_OF_ACTORS_ON_SINGLE_NODE, Acc) -> Acc;
 spawn_actors_on_single_node(Node, Count, Acc) ->
@@ -46,8 +45,12 @@ spawn_actors_on_all_nodes([Node | Nodes], Acc) ->
   PIDs = append(Acc, spawn_actors_on_single_node(Node, 0, [])),
   spawn_actors_on_all_nodes(Nodes, PIDs).
 
+spawn_print_actor() ->
+  spawn(printActor, start, []).
+
 start(K) ->
   Workload = (K * 100000000),
   Nodes = [node() | nodes()],
   PIDs = spawn_actors_on_all_nodes(Nodes, []),
-  distribute_workload(PIDs, K, (Workload/?NUMBER_OF_ACTORS_ON_SINGLE_NODE)).
+  ActorPID = spawn_print_actor(),
+  distribute_workload(PIDs, K, (Workload/?NUMBER_OF_ACTORS_ON_SINGLE_NODE), ActorPID).
