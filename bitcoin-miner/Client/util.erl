@@ -32,7 +32,7 @@ pattern_match_string(_, _, _) -> false.
 
 %SHA256 computation code
 calculateSHA256(String) ->
-    io_lib:format("~64.16.0b", [binary:decode_unsigned(crypto:hash(sha256, [String]))]).
+  io_lib:format("~64.16.0b", [binary:decode_unsigned(crypto:hash(sha256, [String]))]).
 
 
 %runner
