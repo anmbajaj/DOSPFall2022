@@ -27,17 +27,6 @@ startNode() ->
       io:fwrite("Server Node Creation Failed")
   end.
 
-%spawn_actors_and_distribute_work_on_node(_, 500, _) -> true;
-%spawn_actors_and_distribute_work_on_node(Node, NumberOfActorsSpawned, IndividualWorkload) ->
-%  PID = spawn(Node, util, start, []),
-%  PID ! {self(), start, IndividualWorkload},
-%  spawn_actors_and_distribute_work_on_node(Node, (NumberOfActorsSpawned+1), IndividualWorkload).
-
-%loop_for_all_nodes([], _) -> true;
-%loop_for_all_nodes([Node | Nodes], Workload) ->
-%  spawn_actors_and_distribute_work_on_node(Node, 0, Workload),
-%  loop_for_all_nodes(Nodes, Workload).
-
 distribute_workload([], _, _) -> true;
 distribute_workload([PID | PIDs], K, IndividualWorkload) ->
   PID ! {self(), start, K, IndividualWorkload},

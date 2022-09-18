@@ -11,16 +11,20 @@
 
 %% API
 -import(string,[concat/2]).
--export([startNode/0]).
+-export([startNode/2]).
 
 % Start Client Node
-startNode() ->
-  net_kernel:start(['Client@10.3.4.2']),
+startNode(WIP,SIP) ->
+  CStr1 = "Worker@",
+  CStr2 = concat(CStr1,WIP),
+  net_kernel:start([list_to_atom(CStr2)]),
   erlang:set_cookie('bajaj.anmol-t.matukumalli'),
-  net_kernel:connect_node('Server@10.3.4.2'),
+  SStr1 = "Server@",
+  SStr2 = concat(SStr1,SIP),
+  net_kernel:connect_node(list_to_atom(SStr2)),
   NodeGenerated = node(),
   if
-    NodeGenerated == 'Client@10.3.4.2' ->
+    NodeGenerated == 'Worker@10.3.4.2' ->
       io:fwrite("Client Node Created\n");
     true ->
       io:fwrite("Client Node Creation Failed")
@@ -28,7 +32,7 @@ startNode() ->
 
   NodesGenerated = nodes(),
   if
-    NodesGenerated == ['Server@10.3.4.2'] ->
+    NodesGenerated == ['Server@10.20.108.43'] ->
       io:fwrite("Client - Server Connected Established Successfully\n");
     true ->
       io:fwrite("Client - Server Connection Failed")
