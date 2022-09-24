@@ -83,9 +83,7 @@ All actors are done with their work... Switching off the supervisor
 **CPU Utilization Ratio is 3.292055816693462**
 
 
-All actors are done with their work... Switching off the supervisor
-**Total Coins Mined 622**   
-**CPU Utilization Ratio is 7.821455626129014**
+![alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/ResultFor4Zeros.png)
 
 
 ### Set up details
