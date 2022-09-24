@@ -14,10 +14,10 @@
 -export([distribute_workload/3, spawn_actors_on_single_node/4, spawn_actors_on_all_nodes/3, cpuUtil/0]).
 -define(MINIMUM_ACTORS_PER_NODE, 50).
 
-distribute_workload([], _, _) -> true;
-distribute_workload([PID | PIDs], K, IndividualWorkload) ->
-  PID ! {self(), start, K, IndividualWorkload},
-  distribute_workload(PIDs, K, IndividualWorkload).
+distribute_workload([], _, _, _) -> true;
+distribute_workload([PID | PIDs], K, IndividualWorkload, ActorPID) ->
+  PID ! {self(), start, K, IndividualWorkload, ActorPID},
+  distribute_workload(PIDs, K, IndividualWorkload, ActorPID).
 
 spawn_actors_on_single_node(_, Total_Actors, Total_Actors, Acc) -> Acc;
 spawn_actors_on_single_node(Node, Count, Total_Actors , Acc) ->
@@ -32,5 +32,8 @@ spawn_actors_on_all_nodes([Node | Nodes], K, Acc) ->
 cpuUtil() ->
   NoOfProcesses = cpu_sup:nprocs(),
   io:fwrite(standard_io, "Number of processors: ~p~n", [NoOfProcesses]).
+
+spawn_print_actor() ->
+  spawn(printActor, start, []).
 
 
