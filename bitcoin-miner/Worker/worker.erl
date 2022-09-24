@@ -15,7 +15,7 @@
 %Macros
 -define(MINIMUM_WORKLOAD, 100000).
 
-% Start Worker Node
+% Start Worker Node and connects with Master Node
 startNode(WorkerIP, MasterIP) ->
   WorkerPrefix = "Worker@",
   Worker = concat(WorkerPrefix, WorkerIP),
@@ -43,16 +43,27 @@ startNode(WorkerIP, MasterIP) ->
       io:fwrite("Worker - Master Connection Failed")
   end.
 
+%% Function to distribute workload in the worker nodes
+% This function tells each of the worker's supervisors the amount of workload to be executed by the worker. The amount of
+% workload to be given to each worker is given as an argument.
 distribute_workload([], _, _) -> true;
 distribute_workload([PID | PIDs], K, IndividualWorkloadOfAnActor) ->
   PID ! {self(), start, K, IndividualWorkloadOfAnActor},
   distribute_workload(PIDs, K, IndividualWorkloadOfAnActor).
 
+%% Function to generate actors on the master node.
+% This function spawns the given(NumberOfActorsPerNode) number of actors on the master in a recursive way.
+% The function terminated when Count of spawned actors equals the number of actors to be spawned.
 spawn_actors_on_supervisor_node(NumberOfActorsPerNode, NumberOfActorsPerNode, Acc) -> Acc;
 spawn_actors_on_supervisor_node(CountOfSpawnedActors, NumberOfActorsPerNode, Acc) ->
   PID = spawn(util, start, []),
   spawn_actors_on_supervisor_node((CountOfSpawnedActors + 1), NumberOfActorsPerNode, [PID | Acc]).
 
+%% Function to handle the supervisor responsibilities.
+% Once the message is received from master's supervisor, this function spawns the actors on the supervisor node and
+% distributes the workload amongst these actors. It then listens to the actors for messages related to any bitcoin found
+% or the work of an actor being completed.
+% If all the actors finished their work, the supervisors notify the master and quit.
 start(MasterSupervisor, CountOfActorsWorkDone, TotalActors) ->
   case CountOfActorsWorkDone == TotalActors of
     true ->

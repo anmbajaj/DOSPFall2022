@@ -25,7 +25,7 @@ leading zeroes along with their respective strings are sent back to the supervis
 then prints these strings and hashes. Further, the CPU time taken to execute the entire 
 application is also computed. 
 
-Example string: 
+Example string: `bajaj.anmol;88eR25yqTQ3wy1w`
 
 ## Architecture
 
