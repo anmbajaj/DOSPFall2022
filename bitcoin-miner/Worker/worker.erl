@@ -22,20 +22,21 @@ startNode(WorkerIP, MasterIP) ->
   MasterPrefix = "Master@",
   Master = concat(MasterPrefix, MasterIP),
   net_kernel:connect_node(list_to_atom(Master)),
-  NodeGenerated = node(),
+  WorkerNode = node(),
+  WorkerNodeString = atom_to_list(WorkerNode),
   if
-    NodeGenerated == 'Worker@10.3.4.2' ->
+    Worker == WorkerNodeString ->
       io:fwrite("Worker Node Created\n");
     true ->
       io:fwrite("Worker Node Creation Failed")
   end,
 
-  NodesGenerated = nodes(),
+  Nodes = nodes(),
+  [MNode| _] =  Nodes,
+  MasterNode = atom_to_list(MNode),
   if
-    NodesGenerated == ['Master@10.20.108.43'] ->
-      io:fwrite("Client - Server Connected Established Successfully\n");
+    Master == MasterNode ->
+      io:fwrite("Worker - Master Connected Established Successfully\n");
     true ->
-      io:fwrite("Worker - Server Connection Failed")
+      io:fwrite("Worker - Master Connection Failed")
   end.
-
-

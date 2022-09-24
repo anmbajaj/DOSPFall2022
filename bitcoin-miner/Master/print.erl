@@ -13,7 +13,8 @@
 
 start() ->
   receive
-    {String} ->
-      io:fwrite(standard_io, "~p~n", [String])
+    {Sender, String} ->
+      io:fwrite(standard_io, "~p ~p ~n", [Sender, String])
   end,
   start().
+
