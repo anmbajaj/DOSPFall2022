@@ -6,8 +6,7 @@
 %%% @end
 %%% Created : 15. Sep 2022 6:40 PM
 %%%-------------------------------------------------------------------
--module(nodeCreation).
--author("harshini").
+-module(worker).
 
 %% API
 -import(string,[concat/2]).
@@ -15,14 +14,14 @@
 
 
 % Start Worker Node
-startNode(WIP,SIP) ->
-  CStr1 = "Worker@",
-  CStr2 = concat(CStr1,WIP),
-  net_kernel:start([list_to_atom(CStr2)]),
+startNode(WorkerIP, MasterIP) ->
+  WorkerPrefix = "Worker@",
+  Worker = concat(WorkerPrefix, WorkerIP),
+  net_kernel:start([list_to_atom(Worker)]),
   erlang:set_cookie('bajaj.anmol-t.matukumalli'),
-  SStr1 = "Server@",
-  SStr2 = concat(SStr1,SIP),
-  net_kernel:connect_node(list_to_atom(SStr2)),
+  MasterPrefix = "Master@",
+  Master = concat(MasterPrefix, MasterIP),
+  net_kernel:connect_node(list_to_atom(Master)),
   NodeGenerated = node(),
   if
     NodeGenerated == 'Worker@10.3.4.2' ->
@@ -33,7 +32,7 @@ startNode(WIP,SIP) ->
 
   NodesGenerated = nodes(),
   if
-    NodesGenerated == ['Server@10.20.108.43'] ->
+    NodesGenerated == ['Master@10.20.108.43'] ->
       io:fwrite("Client - Server Connected Established Successfully\n");
     true ->
       io:fwrite("Worker - Server Connection Failed")
