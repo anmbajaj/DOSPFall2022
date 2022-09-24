@@ -11,7 +11,8 @@
 -define(MINIMUM_ACTORS_PER_NODE, 50).
 
 %% API
--export([startNode/1, start/1]).
+-export([startNode/1, start/1, spawn_print_actor/0]).
+
 -import(lists,[append/2]).
 -import(string,[concat/2]).
 
@@ -30,9 +31,11 @@ startNode(IPAddr) ->
       io:fwrite("Server Node Creation Failed")
   end.
 
-
 start(K) ->
   Workload = (K * 100000000),
   Nodes = [node() | nodes()],
+
   PIDs = serverSubordinateActor:spawn_actors_on_all_nodes(Nodes, K, []),
-  serverSubordinateActor:distribute_workload(PIDs, K, (Workload/(?MINIMUM_ACTORS_PER_NODE * K))).
+  ActorPID = spawn_print_actor(),
+  serverSubordinateActor:distribute_workload(PIDs, K, (Workload/(?MINIMUM_ACTORS_PER_NODE * K)), ActorPID).
+
