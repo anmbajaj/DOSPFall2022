@@ -47,12 +47,14 @@ runner(Sender, TotalZeros, Count, Workload) ->
     false ->
       ok
   end,
-  runner(Sender, TotalZeros, Count+1, Workload).
+  runner(Sender, TotalZeros, Count+1, trunc(Workload)).
 
 start() ->
   receive
     {Sender, start, TotalZeros, Workload} ->
       runner(Sender, TotalZeros, 0, Workload)
   end,
-  start().
+  start(),
+  _ = spawn(node(), serverSubordinateActor, cpuUtil, []).
+
 

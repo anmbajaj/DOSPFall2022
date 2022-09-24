@@ -8,11 +8,10 @@
 %%%-------------------------------------------------------------------
 -module(serverNodeCreation).
 -author("harshini").
--define(NUMBER_OF_ACTORS_ON_SINGLE_NODE, 250).
+-define(MINIMUM_ACTORS_PER_NODE, 50).
 
 %% API
 -export([startNode/1, start/1]).
-
 -import(lists,[append/2]).
 -import(string,[concat/2]).
 
@@ -23,31 +22,17 @@ startNode(IPAddr) ->
   net_kernel:start([list_to_atom(Str2)]),
   erlang:set_cookie('bajaj.anmol-t.matukumalli'),
   NodeGenerated = node(),
+  NG = atom_to_list(NodeGenerated),
   if
-    NodeGenerated == 'Server@10.20.108.43' ->
+    NG == Str2 ->
       io:fwrite("Server Node Created\n");
     true ->
       io:fwrite("Server Node Creation Failed")
   end.
 
 
-distribute_workload([], _, _) -> true;
-distribute_workload([PID | PIDs], K, IndividualWorkload) ->
-  PID ! {self(), start, K, IndividualWorkload},
-  distribute_workload(PIDs, K, IndividualWorkload).
-
-spawn_actors_on_single_node(_, ?NUMBER_OF_ACTORS_ON_SINGLE_NODE, Acc) -> Acc;
-spawn_actors_on_single_node(Node, Count, Acc) ->
-  PID = spawn(Node, util, start, []),
-  spawn_actors_on_single_node(Node, (Count + 1), [PID | Acc]).
-
-spawn_actors_on_all_nodes([], Acc) -> Acc;
-spawn_actors_on_all_nodes([Node | Nodes], Acc) ->
-  PIDs = append(Acc, spawn_actors_on_single_node(Node, 0, [])),
-  spawn_actors_on_all_nodes(Nodes, PIDs).
-
 start(K) ->
   Workload = (K * 100000000),
   Nodes = [node() | nodes()],
-  PIDs = spawn_actors_on_all_nodes(Nodes, []),
-  distribute_workload(PIDs, K, (Workload/?NUMBER_OF_ACTORS_ON_SINGLE_NODE)).
+  PIDs = serverSubordinateActor:spawn_actors_on_all_nodes(Nodes, K, []),
+  serverSubordinateActor:distribute_workload(PIDs, K, (Workload/(?MINIMUM_ACTORS_PER_NODE * K))).

@@ -23,8 +23,9 @@ startNode(WIP,SIP) ->
   SStr2 = concat(SStr1,SIP),
   net_kernel:connect_node(list_to_atom(SStr2)),
   NodeGenerated = node(),
+  NG = atom_to_list(NodeGenerated),
   if
-    NodeGenerated == 'Worker@10.3.4.2' ->
+    NG == CStr2 ->
       io:fwrite("Worker Node Created\n");
     true ->
       io:fwrite("Worker Node Creation Failed")
@@ -32,7 +33,7 @@ startNode(WIP,SIP) ->
 
   NodesGenerated = nodes(),
   if
-    NodesGenerated == ['Server@10.3.1.1'] ->
+    NodesGenerated == ['Server@10.20.108.43'] ->
       io:fwrite("Worker - Server Connected Established Successfully\n");
     true ->
       io:fwrite("Worker - Server Connection Failed")
