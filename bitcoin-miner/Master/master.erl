@@ -10,7 +10,7 @@
 -define(MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE, 250).
 
 %% API
--export([startNode/1, start/1, start_supervisor/2]).
+-export([startNode/1, start/1, start_supervisor/3]).
 -import(lists,[append/2]).
 -import(string,[concat/2]).
 
@@ -46,29 +46,31 @@ spawn_actors_on_all_nodes([Node | Nodes], Acc, NumberOfActorsPerNode) ->
   PIDs = append(Acc, spawn_actors_on_single_node(Node, 0, [], NumberOfActorsPerNode)),
   spawn_actors_on_all_nodes(Nodes, PIDs, NumberOfActorsPerNode).
 
-start_supervisor(Count, Total) ->
+start_supervisor(CoinsMined, Count, Total) ->
   case Count == Total of
     true ->
-      io:format("All actors are done with their work... Switching off the supervisor"),
+      io:format("All actors are done with their work... Switching off the supervisor~n"),
+      io:format("Total Coins Mined ~p ~n", [CoinsMined]),
       exit(self());
     false ->
       ok
   end,
   receive
     {start, K} ->
-      io:format("Starting the supervisor... Get ready for some Bitcoins $$$$$  :p"),
+      io:format("Starting the supervisor... Get ready for some Bitcoins $$$$$  :p~n"),
       Workload = (K * ?MINIMUM_WORKLOAD),
       Nodes = [node() | nodes()],
       PIDs = spawn_actors_on_all_nodes(Nodes, [], K * ?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE),
       distribute_workload(PIDs, K, trunc(Workload/(?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * K * length(Nodes))));
     {_, bitcoin_found, String, HashString} ->
-      io:format(standard_io, "~p\t~p~n", [String, HashString]);
+      io:format(standard_io, "~p\t~p~n", [String, HashString]),
+      start_supervisor(CoinsMined+1, Count, Total);
     {_, actor_work_completed} ->
-      start_supervisor(Count+1, Total)
+      start_supervisor(CoinsMined, Count+1, Total)
   end,
-  start_supervisor(Count, Total).
+  start_supervisor(CoinsMined, Count, Total).
 
 start(K) ->
   Nodes = [node() | nodes()],
-  PID = spawn(?MODULE, start_supervisor, [0, K * ?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * length(Nodes)]),
+  PID = spawn(?MODULE, start_supervisor, [0, 0, K * ?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * length(Nodes)]),
   PID ! {start, K}.
