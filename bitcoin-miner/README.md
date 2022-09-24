@@ -29,7 +29,7 @@ Example string:
 
 ## Architecture
 
-! [alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/BitcoinMiner.png)
+![alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/BitcoinMiner.png)
 
 ## Requirements
 
