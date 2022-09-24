@@ -6,8 +6,7 @@
 %%% @end
 %%% Created : 18. Sep 2022 2:33 PM
 %%%-------------------------------------------------------------------
--module(printActor).
--author("macos").
+-module(print).
 
 %% API
 -export([start/0]).

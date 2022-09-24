@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author anmol bajaj
+%%% @author Anmol Bajaj
 %%% @copyright (C) 2022, <University of Florida>
 %%% @doc
 %%%
@@ -7,8 +7,10 @@
 %%% Created : 15. Sep 2022 7:30 PM
 %%%-------------------------------------------------------------------
 -module(util).
+
 -export([calculateSHA256/1, get_random_string/2, runner/5, pattern_match_string/3, start/0]).
 -import(string,[concat/2]).
+
 -define(GATOR_ID, "bajaj.anmol;").
 %-define(NUMBER_OF_LEADING_ZEROS, 2).
 -define(RANDOM_STRING_LENGTH, 15).
@@ -32,7 +34,7 @@ pattern_match_string(_, _, _) -> false.
 
 %SHA256 computation code
 calculateSHA256(String) ->
-    io_lib:format("~64.16.0b", [binary:decode_unsigned(crypto:hash(sha256, [String]))]).
+  io_lib:format("~64.16.0b", [binary:decode_unsigned(crypto:hash(sha256, [String]))]).
 
 
 %runner
