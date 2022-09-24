@@ -10,7 +10,7 @@
 -define(MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE, 250).
 
 %% API
--export([startNode/1, start/1, start_supervisor/3]).
+-export([startNode/1, start/1, start_supervisor/5]).
 -import(lists,[append/2]).
 -import(string,[concat/2]).
 
@@ -46,11 +46,15 @@ spawn_actors_on_all_nodes([Node | Nodes], Acc, NumberOfActorsPerNode) ->
   PIDs = append(Acc, spawn_actors_on_single_node(Node, 0, [], NumberOfActorsPerNode)),
   spawn_actors_on_all_nodes(Nodes, PIDs, NumberOfActorsPerNode).
 
-start_supervisor(CoinsMined, Count, Total) ->
+start_supervisor(CoinsMined, Count, Total, StartWallClockTime, StartRuntime) ->
   case Count == Total of
     true ->
       io:format("All actors are done with their work... Switching off the supervisor~n"),
       io:format("Total Coins Mined ~p ~n", [CoinsMined]),
+      EndWallClockTime = element(2, statistics(wall_clock)),
+      EndRuntime = element(2, statistics(runtime)),
+      CPUUtilRatio = (EndRuntime - StartRuntime)/(EndWallClockTime - StartWallClockTime),
+      io:format("CPU Utilization Ratio is ~p ~n", [CPUUtilRatio]),
       exit(self());
     false ->
       ok
@@ -64,13 +68,17 @@ start_supervisor(CoinsMined, Count, Total) ->
       distribute_workload(PIDs, K, trunc(Workload/(?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * K * length(Nodes))));
     {_, bitcoin_found, String, HashString} ->
       io:format(standard_io, "~p\t~p~n", [String, HashString]),
-      start_supervisor(CoinsMined+1, Count, Total);
+      start_supervisor(CoinsMined+1, Count, Total, StartWallClockTime, StartRuntime);
     {_, actor_work_completed} ->
-      start_supervisor(CoinsMined, Count+1, Total)
+      start_supervisor(CoinsMined, Count+1, Total, StartWallClockTime, StartRuntime)
   end,
-  start_supervisor(CoinsMined, Count, Total).
+  start_supervisor(CoinsMined, Count, Total, StartWallClockTime, StartRuntime).
 
 start(K) ->
   Nodes = [node() | nodes()],
-  PID = spawn(?MODULE, start_supervisor, [0, 0, K * ?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * length(Nodes)]),
+
+  StartWallClockTime = element(2, statistics(wall_clock)),
+  StartRuntime = element(2, statistics(runtime)),
+
+  PID = spawn(?MODULE, start_supervisor, [0, 0, K * ?MINIMUM_NUMBER_OF_ACTORS_ON_SINGLE_NODE * length(Nodes), StartWallClockTime, StartRuntime]),
   PID ! {start, K}.
