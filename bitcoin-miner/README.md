@@ -78,31 +78,35 @@ After cloning the project, execute the following steps.
 
 All actors are done with their work... Switching off the supervisor
 
-**Total Coins Mined 1180** 
+**Total Coins Mined 1227** 
 
-**CPU Utilization Ratio is 3.292055816693462**
+**CPU Utilization Ratio for Worker node is 3.3249843507385637**
 
-
-![alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/ResultFor4Zeros.png)
+**CPU Utilization Ratio for Master node is  6.00250081044783**
 
 
 ### Set up details
 
-This application is tested with 2 systems. 
+This application is tested with 2 systems. The actors are for input 4. 
 
 #### System 1:
 
 * Processor: Apple M1
 * Cores : 8
 * Actors : 1200
-* CPU-Absolute Ratio =  3.292055816693462
+* CPU-Absolute Ratio =  6.0
+
+![alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/Master_CPU_time.png)
+
 
 #### System 2:
 
 * Processor: Intel i5 Dual core
 * Cores : 2
 * Actors : 1200
-* CPU-Absolute Ratio = 2.717
+* CPU-Absolute Ratio = 3.4175793028585213
+
+![alt text](https://github.com/anmbajaj/DOSPFall2022/blob/main/bitcoin-miner/Worker_CPU_time.png)
 
 
 ***Note:*** The size of workload has been determined by trial and error method. The 
@@ -110,19 +114,18 @@ aim was to have the number of leading zeros closer to 10. The trails started
 with 0.1 million and increased in multiples of 50. 
 
 #### Highest Number of Leading Zeros:
-The highest leading zeros : **7**. The coins with most zeros are the following:
+The highest leading zeros : **8**. The coins with most zeros are the following:
 
-Starting the supervisor... Get ready for some Bitcoins $$$$$  :p
 
-{start,7}
+`CPU Utilization Ratio of node "Master@10.20.108.43" is 5.939775228826324`
 
-`"bajaj.anmol;4Rt93ttr0Y72wT7"`   `"0000000a961c422811221e88ecc1f65a1e7f1e8d4e574edda1f394030be7ee2b"`
+`"bajaj.anmol;W08R8wqqRtqR5w0"   "00000000200ced10c63d709b08d65d9785ae20cdd054de4702c065dfc02d5eb1"`
 
-All actors are done with their work... Switching off the supervisor
+`CPU Utilization Ratio of node 'Worker@10.3.4.2' is 3.4175793028585213`
 
-Total Coins Mined 1      
+`Total Coins Mined 1`     
 
-CPU Utilization Ratio is 3.3317986559309327 
+
 
 
 
