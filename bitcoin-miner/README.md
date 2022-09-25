@@ -1,7 +1,7 @@
 # Bitcoin Miner - DOSP Fall 2022 
 Bitcoin miner is a distributed application in Erlang that mines bitcoin strings in the 
-multiples of 100 million using SHA 256 algorithm. This model uses the actor model of 
-Erlang and distributes actors in the multiples of 250 across different systems.
+multiples of 20 million using SHA 256 algorithm. This model uses the actor model of 
+Erlang and distributes actors in the multiples of 300 across different systems.
 
 ## Project Members
 * Anmol Bajaj
@@ -41,17 +41,17 @@ After cloning the project, execute the following steps.
 
 ### Start the server
 
-* cd Master
-* master:startNode("{IP of your server}").
+* In the master system, execute `cd Master`
+* Execute `master:startNode("{IP of your server}").`
 
 ### Start the worker
 
-* cd Worker
-* worker:startNode("{Worker IP}","{Server IP}").
+* In the worker system, execute `cd Worker`
+* Execute `worker:startNode("{Worker IP}","{Server IP}").`
 
 ### Start the application
 
-* In Master, run master:start({k}).
+* In Master system, execute `master:start({k}).`
 
 
 ## Results of the Application for Input k = 4
