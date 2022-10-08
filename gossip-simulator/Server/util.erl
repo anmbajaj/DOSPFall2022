@@ -13,6 +13,7 @@
 -export([start/0]).
 -define(MAX_RUMORS, 10).
 
+
 %Starting the actors
 start() ->
   receive
@@ -26,8 +27,9 @@ start() ->
   start().
 
 %% Runner function to implement initial logic
-runner(_, Message, Neighbors) ->
+runner( _, Message, Neighbors) ->
   RandomIndex = rand:uniform(length(Neighbors)),
   PID = lists:nth(RandomIndex,Neighbors),
   PID ! {self(), Message, Neighbors}.
+
 

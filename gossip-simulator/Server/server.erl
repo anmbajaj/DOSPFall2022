@@ -10,7 +10,7 @@
 -author("harshini").
 
 %% API
--export([startNode/1, start/3, start_supervisor/0, build_topology/4]).
+-export([startNode/1, start/3, start_supervisor/0, build_topology/5]).
 -import(lists,[append/2]).
 -import(string,[concat/2]).
 
@@ -50,7 +50,7 @@ start_supervisor() ->
       end,
       ActorPIDs = spawn_actors_on_node(0, NumNodes, []),
       Neighbors = maps:new(),
-      ListOfNeighbors = build_topology('', Topology, ActorPIDs, Neighbors),
+      ListOfNeighbors = build_topology('', NumNodes, Topology, ActorPIDs, Neighbors),
       statistics(wall_clock),
       statistics(runtime),
       if
@@ -89,18 +89,20 @@ spawn_actors_on_node(CountOfSpawnedActors, NumberOfActors, Acc) ->
   PID = spawn(util, start, []),
   spawn_actors_on_node((CountOfSpawnedActors + 1), NumberOfActors, [PID | Acc]).
 
+
 %% Creating the topologies
-build_topology(topology_built,_,_,Neighbors) -> Neighbors;
-build_topology(_, Topology, PIDList, Neighbors) ->
+build_topology(topology_built, _, _,_,Neighbors) -> Neighbors;
+build_topology(_, NumNodes, Topology, PIDList, Neighbors) ->
   if
     Topology == "Full"->
       ListOfNeighbors = build_full_topology(PIDList, PIDList, Neighbors),
-      build_topology(topology_built, Topology, PIDList, ListOfNeighbors);
-    %%Topology == "2DGrid" ->
-      %%build_2D_topology(N, PIDList, Neighbors);
+      build_topology(topology_built, NumNodes, Topology, PIDList, ListOfNeighbors);
+    Topology == "2DGrid" ->
+      ListOfNeighbors = build_2D_topology(NumNodes, PIDList, PIDList, Neighbors),
+      io:fwrite("Neighbors ~p ~n", [ListOfNeighbors]);
     Topology == "Line" ->
       ListOfNeighbors = build_line_topology(PIDList, PIDList, Neighbors),
-      build_topology(topology_built, Topology, PIDList, ListOfNeighbors);
+      build_topology(topology_built, NumNodes, Topology, PIDList, ListOfNeighbors);
     %%Topology == "Imperfect3DGrid" ->
       %%build_imperfect_3D_topology(N, PIDList, Neighbors);
     true -> ok
@@ -134,6 +136,36 @@ get_index(Item, List) -> get_index(Item, List, 1).
 get_index(_,[],_) -> not_found;
 get_index(Item, [Item|_], Index) -> Index;
 get_index(Item, [_|List], Index) -> get_index(Item, List, Index + 1).
+
+
+%% Building 2D Grid topology
+build_2D_topology(_,[],_,Neighbors) -> Neighbors;
+build_2D_topology(NumNodes, [PID|PIDList], PIDs, Neighbors) ->
+  N = trunc(math:sqrt(NumNodes)),
+  Index = get_index(PID, PIDs),
+  case Index - N > 0 andalso Index - N < NumNodes of
+    true ->
+      L1 = lists:nth(Index - N, PIDs);
+    false -> L1 = ""
+  end,
+  case Index rem N /= 0 of
+    true -> L2 = lists:nth(Index + 1, PIDs);
+    false -> L2 = ""
+  end,
+  case Index rem N /= 1 of
+    true -> L3 = lists:nth(Index - 1, PIDs);
+    false -> L3 = ""
+  end,
+  case Index + N >= 0 andalso Index + N < NumNodes of
+    true -> L4 = lists:nth(Index + N, PIDs);
+    false -> L4 = ""
+  end,
+  Nlist = [L1, L2, L3, L4],
+  FirstDelete = lists:delete([],Nlist),
+  FinalList = lists:delete([],FirstDelete),
+  M = maps:put(PID, FinalList, Neighbors),
+  build_2D_topology(NumNodes,PIDList,PIDs,M).
+
 
 %% Start the gossip protocol in the actors
 start_protocol(ActorPIDs, Message, ListOfNeighbors) ->
